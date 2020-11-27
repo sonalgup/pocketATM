@@ -34,11 +34,7 @@ private AuthenticationManager authenticationManager;
 		
 	}
 	
-@RequestMapping("/hi")
-public String hi()
-{
-	return "hi";
-}
+
 @RequestMapping("/signup")
 public String signup(@RequestBody User user)
 {
