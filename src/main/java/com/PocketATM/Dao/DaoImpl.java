@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.PocketATM.POJO.LoginData;
 import com.PocketATM.POJO.User;
@@ -34,13 +35,13 @@ private EntityManager entityManager;
 		String mobile_email = login_data.getMobile_email();
 		int pin = login_data.getPin();
 		 
-		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
-                "[a-zA-Z0-9_+&*-]+)*@" + 
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
-                "A-Z]{2,7}$"; 
-                  
-      Pattern pat = Pattern.compile(emailRegex); 
-       boolean isEmail = pat.matcher(mobile_email).matches(); 
+//		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+//                "[a-zA-Z0-9_+&*-]+)*@" + 
+//                "(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
+//                "A-Z]{2,7}$"; 
+//                  
+//      Pattern pat = Pattern.compile(emailRegex); 
+//       boolean isEmail = pat.matcher(mobile_email).matches(); 
 		
 		List<User>  users = entityManager.createQuery(
 				 "FROM User u WHERE u.email = :email_address OR u.mobile_no = :mobile" ,User.class)
@@ -61,6 +62,23 @@ private EntityManager entityManager;
 	else
 		return "failure";
 	
+	}
+
+	@Override
+	public int getPin(String email_mobile) {
+		List<User>  users = entityManager.createQuery(
+				 "FROM User u WHERE u.email = :email_address OR u.mobile_no = :mobile" ,User.class)
+				 .setParameter("email_address", email_mobile)
+				 .setParameter("mobile",email_mobile)
+				 .getResultList();
+		if(users.size()!=0)
+		{
+			User user = users.get(0);
+			return user.getPin();
+		}
+		else
+			throw new UsernameNotFoundException("Incorrect Email or Pin");
+		
 	}
 
 }

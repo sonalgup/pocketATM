@@ -9,5 +9,5 @@ public interface DaoInterface{
 	public String signup(User user);
 
 	public String login(LoginData login_data);
-
+    public int getPin(String email);
 }
